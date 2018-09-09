@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>lib/akamai-token.php</location>
+    <name>Akamai EdgeAuth Token</name>
+    <license>Apache</license>
+    <version>2.0</version>
+    <licenseversion>2.0</licenseversion>
+  </library>
+</libraries>
