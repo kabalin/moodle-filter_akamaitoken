@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Akamai EdgeAuth Tokenization filter settings
+ * Akamai Media Services Authorization Token stream protection filter settings
  *
  * @package   filter_akamaitoken
  * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
@@ -36,8 +36,8 @@ if ($ADMIN->fulltree) {
             get_string('windowdesc', 'filter_akamaitoken'),
             300, PARAM_INT));
 
-    $settings->add(new admin_setting_configtext('filter_akamaitoken/domain',
-            get_string('domain', 'filter_akamaitoken'),
-            get_string('domaindesc', 'filter_akamaitoken'),
-            '*.akamaihd.net', PARAM_RAW_TRIMMED));
-}
+    $settings->add(new admin_setting_configtext('filter_akamaitoken/ondemanddomain',
+            get_string('ondemanddomain', 'filter_akamaitoken'),
+            get_string('ondemanddomaindesc', 'filter_akamaitoken'),
+            '', PARAM_HOST));
+    }

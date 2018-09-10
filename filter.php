@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Akamai EdgeAuth Tokenization filter
+ * Akamai Media Services Authorization Token stream protection filter
  *
- * This filter adds a security token to any HLS media links located in
- * configured domain.
+ * This filter adds Edge Autorization token to HLS media links located in
+ * configured Akamai Media Services domain.
  *
  * @package   filter_akamaitoken
  * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
@@ -29,7 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Akamai EdgeAuth Tokenization filter class.
+ * Akamai Media Services Authorization Token stream protection filter class.
  *
  * @package   filter_akamaitoken
  * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>

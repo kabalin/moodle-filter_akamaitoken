@@ -25,11 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['filtername'] = 'Akamai EdgeAuth URL Tokenization';
-$string['domain'] = 'Domain';
-$string['domaindesc'] = 'Akamai CDN Domain from which media is served, e.g. myorganisationhost.akamaihd.net or *.akamaihd.net.';
+$string['filtername'] = 'Akamai Media Services Authorization Token stream protection';
+$string['ondemanddomain'] = 'On Demand streaming domain';
+$string['ondemanddomaindesc'] = 'Akamai Media Services on Demand streaming domain from which HLS media is served, e.g. example-vh.akamaihd.net';
 $string['key'] = 'Key';
-$string['keydesc'] = 'Secret required to produce token. It must be hexadecimal digit string of even-length.';
-$string['privacy:metadata'] = 'The Akamai EdgeAuth Tokenization plugin does not store any personal data.';
+$string['keydesc'] = 'Secret required to produce EdgeAuth token. It must be hexadecimal digit string of even-length.';
+$string['privacy:metadata'] = 'The Akamai Media Services Authorization Token stream protection plugin does not store any personal data.';
 $string['window'] = 'Validity time window';
 $string['windowdesc'] = 'The number of seconds the token will be valid for.';
