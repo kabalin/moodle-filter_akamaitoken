@@ -27,6 +27,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot.'/filter/mediaplugin/filter.php');
 
 /**
  * Akamai Media Services Authorization Token stream protection filter class.
@@ -36,7 +37,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2018 Ecole hôtelière de Lausanne {@link https://www.ehl.edu/}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class filter_akamaitoken extends moodle_text_filter {
+class filter_akamaitoken extends filter_mediaplugin {
 
     /**
      * Performs filtering.
@@ -53,11 +54,10 @@ class filter_akamaitoken extends moodle_text_filter {
             return $text;
         }
 
-        if (stripos($text, '</a>') === false) {
-            // Performance shortcut - if there are no </a> tags, nothing can match.
+        if (stripos($text, '</a>') === false && stripos($text, '</video>') === false && stripos($text, '</audio>') === false) {
+            // Performance shortcut - if there are no </a>, </video> or </audio> tags, nothing can match.
             return $text;
         }
-
 
         // Looking for tags.
         $matches = preg_split('/(<[^>]*>)/i', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -66,9 +66,9 @@ class filter_akamaitoken extends moodle_text_filter {
             return $text;
         }
 
-        // Regex to find Akamai HLS media extensions in an <a> tag.
-        $domain = get_config('filter_akamaitoken', 'domain');
-        $re = '~<a\s[^>]*href="([^"]*(?:' .  $domain . ')[^"]*)"[^>]*>([^>]*)</a>~is';
+        // Regex to find Akamai Media Services domain in an <a> tag.
+        $domain = get_config('filter_akamaitoken', 'ondemanddomain');
+        $re = '~<a\s[^>]*href="([^"]*(?:' . preg_quote($domain) . ')[^"]*)"[^>]*>([^>]*)</a>~is';
 
         $newtext = '';
         $validtag = '';
@@ -87,6 +87,9 @@ class filter_akamaitoken extends moodle_text_filter {
                 if (strlen($validtag) < 4096) {
                     if ($tagname === 'a') {
                         $processed = preg_replace_callback($re, array($this, 'callback'), $validtag);
+                    } else {
+                        // For audio and video tags we just process them without precheck for embeddable markers.
+                        $processed = $this->process_media_tag($validtag);
                     }
                 }
                 // Rebuilding the string with our new processed text.
@@ -94,7 +97,7 @@ class filter_akamaitoken extends moodle_text_filter {
                 // Wipe it so we can catch any more instances to filter.
                 $validtag = '';
                 $processed = '';
-            } else if (preg_match('/<a\s[^>]*/', $tag, $tagmatches) && $sizeofmatches > 1 &&
+            } else if (preg_match('/<(a|video|audio)\s[^>]*/', $tag, $tagmatches) && $sizeofmatches > 1 &&
                     (empty($validtag) || $tagname === strtolower($tagmatches[1]))) {
                 // Looking for a starting tag. Ignore tags embedded into each other.
                 $validtag = $tag;
@@ -115,13 +118,47 @@ class filter_akamaitoken extends moodle_text_filter {
     }
 
     /**
-     * Replace link with tokenised one.
+     * Replace link with embedded content, if supported.
      *
      * @param array $matches
      * @return string
      */
     private function callback(array $matches) {
-        var_dump($matches);
-        return '';
+        global $CFG, $PAGE;
+
+        // Check if we ignore it.
+        if (preg_match('/class="[^"]*nomediaplugin/i', $matches[0])) {
+            return $matches[0];
+        }
+
+        // Get name.
+        $name = trim($matches[2]);
+        if (empty($name) or strpos($name, 'http') === 0) {
+            $name = ''; // Use default name.
+        }
+
+        // Split provided URL into alternatives.
+        $mediamanager = core_media_manager::instance();
+        $urls = $mediamanager->split_alternatives($matches[1], $width, $height);
+
+        $options = [core_media_manager::OPTION_ORIGINAL_TEXT => $matches[0]];
+        return $this->embed_alternatives($urls, $name, $width, $height, $options);
+    }
+
+    /**
+     * Renders media files (audio or video) using suitable embedded player.
+     *
+     * Wrapper for {@link core_media_manager::embed_alternatives()}
+     *
+     * @param array $urls Array of moodle_url to media files
+     * @param string $name Optional user-readable name to display in download link
+     * @param int $width Width in pixels (optional)
+     * @param int $height Height in pixels (optional)
+     * @param array $options Array of key/value pairs
+     * @return string HTML content of embed
+     */
+    protected function embed_alternatives($urls, $name, $width, $height, $options) {
+        var_dump($urls);
+        return parent::embed_alternatives($urls, $name, $width, $height, $options);
     }
 }
