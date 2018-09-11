@@ -26,18 +26,35 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('filter_akamaitoken/key',
-            get_string('key', 'filter_akamaitoken'),
-            get_string('keydesc', 'filter_akamaitoken'),
-            ''));
-
     $settings->add(new admin_setting_configduration('filter_akamaitoken/window',
             get_string('window', 'filter_akamaitoken'),
             get_string('windowdesc', 'filter_akamaitoken'),
             300, PARAM_INT));
 
+    $settings->add(new admin_setting_heading('ondemandconfig',
+            get_string('ondemandconfig', 'filter_akamaitoken'), ''));
+
+    $settings->add(new admin_setting_configtext('filter_akamaitoken/ondemandkey',
+            get_string('ondemandkey', 'filter_akamaitoken'),
+            get_string('ondemandkeydesc', 'filter_akamaitoken'),
+            ''));
+
     $settings->add(new admin_setting_configtext('filter_akamaitoken/ondemanddomain',
             get_string('ondemanddomain', 'filter_akamaitoken'),
             get_string('ondemanddomaindesc', 'filter_akamaitoken'),
             '', PARAM_HOST));
-    }
+
+    $settings->add(new admin_setting_heading('liveconfig',
+            get_string('liveconfig', 'filter_akamaitoken'), ''));
+
+    $settings->add(new admin_setting_configtext('filter_akamaitoken/livekey',
+            get_string('livekey', 'filter_akamaitoken'),
+            get_string('livekeydesc', 'filter_akamaitoken'),
+            ''));
+
+
+    $settings->add(new admin_setting_configtext('filter_akamaitoken/livedomain',
+            get_string('livedomain', 'filter_akamaitoken'),
+            get_string('livedomaindesc', 'filter_akamaitoken'),
+            '', PARAM_HOST));
+}

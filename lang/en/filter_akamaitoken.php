@@ -26,10 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['filtername'] = 'Akamai Media Services Authorization Token stream protection';
+$string['liveconfig'] = 'Akamai Media Services Live stream';
+$string['livedomain'] = 'Live streaming domain';
+$string['livedomaindesc'] = 'Akamai Media Services Live streaming domain from which HLS media is served, e.g. example-lh.akamaihd.net. Leave empty if there is no Live Service';
+$string['livekey'] = 'Live service key';
+$string['livekeydesc'] = 'Encryption key required to produce EdgeAuth token for Live stream. It must be hexadecimal digit string of even-length.';
+$string['ondemandconfig'] = 'Akamai Media Services On Demand stream';
 $string['ondemanddomain'] = 'On Demand streaming domain';
-$string['ondemanddomaindesc'] = 'Akamai Media Services on Demand streaming domain from which HLS media is served, e.g. example-vh.akamaihd.net';
-$string['key'] = 'Key';
-$string['keydesc'] = 'Secret required to produce EdgeAuth token. It must be hexadecimal digit string of even-length.';
+$string['ondemanddomaindesc'] = 'Akamai Media Services on Demand streaming domain from which HLS media is served, e.g. example-vh.akamaihd.net. Leave empty if there is no On Demand Service';
+$string['ondemandkey'] = 'On Demand service key';
+$string['ondemandkeydesc'] = 'Encryption key required to produce EdgeAuth token for On Demand stream. It must be hexadecimal digit string of even-length.';
 $string['privacy:metadata'] = 'The Akamai Media Services Authorization Token stream protection plugin does not store any personal data.';
 $string['window'] = 'Validity time window';
 $string['windowdesc'] = 'The number of seconds the token will be valid for.';
