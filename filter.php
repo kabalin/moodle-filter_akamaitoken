@@ -29,6 +29,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/filter/mediaplugin/filter.php');
+require_once($CFG->dirroot.'/filter/akamaitoken/lib/akamai-token.php');
 
 /**
  * Akamai Media Services Authorization Token stream protection filter class.
@@ -41,9 +42,9 @@ require_once($CFG->dirroot.'/filter/mediaplugin/filter.php');
 class filter_akamaitoken extends filter_mediaplugin {
 
     /**
-     * Renders media files (audio or video) using suitable embedded player.
-     *
-     * Wrapper for {@link core_media_manager::embed_alternatives()}
+     * This is a wrapper for {@link filter_mediaplugin::embed_alternatives()}
+     * that adds Edge Autorization token to HLS media URL in configured Akamai
+     * Media Services domain.
      *
      * @param array $urls Array of moodle_url to media files
      * @param string $name Optional user-readable name to display in download link
@@ -53,7 +54,32 @@ class filter_akamaitoken extends filter_mediaplugin {
      * @return string HTML content of embed
      */
     protected function embed_alternatives($urls, $name, $width, $height, $options) {
-        var_dump($urls);
+        $mediamanager = core_media_manager::instance();
+        foreach ($urls as $key => $url) {
+            // Check if we deal with Akamai Media Services HLS stream.
+            if ($url->get_host() === get_config('filter_akamaitoken', 'ondemanddomain') && $mediamanager->get_filename($url) === 'master.m3u8') {
+                // Prepare path for tokenization (remove trailing /master.m3u8).
+                $parts = explode('/', $url->get_path());
+                array_pop($parts);
+                $path  = implode('/', $parts);
+
+                // Configure EdgeAuth token.
+                $edgeconfig = new Akamai_EdgeAuth_Config();
+                $edgeconfig->set_window(get_config('filter_akamaitoken', 'window'));
+                $edgeconfig->set_acl($path . '*');
+                $edgeconfig->set_key(get_config('filter_akamaitoken', 'key'));
+                $edgeconfig->set_ip(getremoteaddr());
+
+                // Generate EdgeAuth token.
+                $generator = new Akamai_EdgeAuth_Generate();
+                $token = $generator->generate_token($edgeconfig);
+
+                // Add token parameter to URL.
+                $url->param('hdnts', $token);
+                $urls[$key] = $url;
+            }
+        }
+
         return parent::embed_alternatives($urls, $name, $width, $height, $options);
     }
 }
