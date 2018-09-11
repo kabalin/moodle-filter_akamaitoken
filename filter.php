@@ -15,10 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Akamai Media Services Authorization Token stream protection filter
+ * Akamai Media Services Authorization Token stream protection filter.
  *
- * This filter adds Edge Autorization token to HLS media links located in
- * configured Akamai Media Services domain.
+ * This filter enables viewing SMP protected HLS media stream delivered by
+ * Akamai Media Services. It is generating and adding one-time access
+ * Edge Authorization token to HLS stream URL, so that it is validated
+ * by Edge server to authenticate user session and permit playback using the
+ * media player plugin of your choice.
  *
  * @package   filter_akamaitoken
  * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
@@ -43,8 +46,8 @@ class filter_akamaitoken extends filter_mediaplugin {
 
     /**
      * This is a wrapper for {@link filter_mediaplugin::embed_alternatives()}
-     * that adds Edge Autorization token to HLS media URL in configured Akamai
-     * Media Services domain.
+     * that adds Edge Authorization token to HLS media URL provisioned by
+     * Akamai Media Services.
      *
      * @param array $urls Array of moodle_url to media files
      * @param string $name Optional user-readable name to display in download link

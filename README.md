@@ -8,7 +8,7 @@ by Edge server to authenticate user session and permit playback using the
 media player plugin of your choice.
 
 Currently plugin supports adding tokens to HLS streams provisioned by
-Akamai Media Services on Demand and Akamai Media Services Life.
+Akamai Media Services on Demand and Akamai Media Services Live.
 
 For more details on Akamai Segmented Media Protection, please refer to [documentation](https://learn.akamai.com/en-us/webhelp/adaptive-media-delivery/adaptive-media-delivery-implementation-guide/GUID-2EFAD1C1-B5B8-4F66-A4CC-10428654CDF7.html).
 
@@ -49,7 +49,7 @@ The final URL passed to player will be:
 
 `http://example-vh.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8?ndnts=<token>`
 
-Example of client-side URL Syntax for Akamai Media Services Life:
+Example of client-side URL Syntax for Akamai Media Services Live:
 
 `http://example-lh.akamaihd.net/i/event_1@49207/master.m3u8`.
 
