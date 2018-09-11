@@ -58,31 +58,58 @@ class filter_akamaitoken extends filter_mediaplugin {
      */
     protected function embed_alternatives($urls, $name, $width, $height, $options) {
         $mediamanager = core_media_manager::instance();
+        // Determine which Akamai Media Services are configured.
+        $servicetypes = array();
+        if (get_config('filter_akamaitoken', 'ondemandkey') && get_config('filter_akamaitoken', 'ondemanddomain')) {
+            $servicetypes[] = 'ondemand';
+        }
+        if (get_config('filter_akamaitoken', 'livekey') && get_config('filter_akamaitoken', 'livedomain')) {
+            $servicetypes[] = 'live';
+        }
+
         foreach ($urls as $key => $url) {
-            // Check if we deal with Akamai Media Services HLS stream.
-            if ($url->get_host() === get_config('filter_akamaitoken', 'ondemanddomain') && $mediamanager->get_filename($url) === 'master.m3u8') {
-                // Prepare path for tokenization (remove trailing /master.m3u8).
-                $parts = explode('/', $url->get_path());
-                array_pop($parts);
-                $path  = implode('/', $parts);
+            if ($mediamanager->get_filename($url) !== 'master.m3u8') {
+                // Not an HLS stream.
+                continue;
+            }
 
-                // Configure EdgeAuth token.
-                $edgeconfig = new Akamai_EdgeAuth_Config();
-                $edgeconfig->set_window(get_config('filter_akamaitoken', 'window'));
-                $edgeconfig->set_acl($path . '*');
-                $edgeconfig->set_key(get_config('filter_akamaitoken', 'key'));
-                $edgeconfig->set_ip(getremoteaddr());
+            foreach ($servicetypes as $servicetype) {
+                // Check if we deal with Akamai Media Services HLS stream of particular type.
+                if ($url->get_host() === get_config('filter_akamaitoken', $servicetype . 'domain')) {
+                    // Prepare path for tokenization (remove trailing /master.m3u8).
+                    $parts = explode('/', $url->get_path());
+                    array_pop($parts);
+                    $path  = implode('/', $parts);
 
-                // Generate EdgeAuth token.
-                $generator = new Akamai_EdgeAuth_Generate();
-                $token = $generator->generate_token($edgeconfig);
-
-                // Add token parameter to URL.
-                $url->param('hdnts', $token);
-                $urls[$key] = $url;
+                    // Add token parameter to URL.
+                    $token = $this->generate_token(get_config('filter_akamaitoken', $servicetype . 'key'), $path);
+                    $url->param('hdnts', $token);
+                    $urls[$key] = $url;
+                }
             }
         }
 
         return parent::embed_alternatives($urls, $name, $width, $height, $options);
+    }
+
+    /**
+     * EdgeAuth token generator.
+     *
+     * @param string $key encryption key
+     * @param string $path path for using as ACL.
+     * @return string EdgeAuth token.
+     */
+    private function generate_token($key, $path) {
+        // Configure EdgeAuth token.
+        $edgeconfig = new Akamai_EdgeAuth_Config();
+        $edgeconfig->set_window(get_config('filter_akamaitoken', 'window'));
+        $edgeconfig->set_acl($path . '*');
+        $edgeconfig->set_key($key);
+        $edgeconfig->set_ip(getremoteaddr());
+
+        // Generate EdgeAuth token.
+        $generator = new Akamai_EdgeAuth_Generate();
+        $token = $generator->generate_token($edgeconfig);
+        return $token;
     }
 }
