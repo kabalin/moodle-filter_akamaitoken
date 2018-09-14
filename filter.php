@@ -105,7 +105,12 @@ class filter_akamaitoken extends filter_mediaplugin {
         $edgeconfig->set_window(get_config('filter_akamaitoken', 'window'));
         $edgeconfig->set_acl($path . '*');
         $edgeconfig->set_key($key);
-        $edgeconfig->set_ip(getremoteaddr());
+
+        // Encode IP in token, if required. In some network configurations
+        // this may cause an issue.
+        if (get_config('filter_akamaitoken', 'restrictip')) {
+            $edgeconfig->set_ip(getremoteaddr());
+        }
 
         // Generate EdgeAuth token.
         $generator = new Akamai_EdgeAuth_Generate();

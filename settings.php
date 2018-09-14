@@ -31,6 +31,11 @@ if ($ADMIN->fulltree) {
             get_string('windowdesc', 'filter_akamaitoken'),
             300, PARAM_INT));
 
+    $settings->add(new admin_setting_configcheckbox('filter_akamaitoken/restrictip',
+            get_string('restrictip', 'filter_akamaitoken'),
+            get_string('restrictipdesc', 'filter_akamaitoken'),
+            false, PARAM_BOOL));
+
     $settings->add(new admin_setting_heading('ondemandconfig',
             get_string('ondemandconfig', 'filter_akamaitoken'), ''));
 

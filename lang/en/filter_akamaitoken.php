@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['restrictip'] = 'Restrict token to IP address';
+$string['restrictipdesc'] = 'If enabled, token will be restricted to client IP address.';
 $string['filtername'] = 'Akamai Media Services Authorization Token stream protection';
 $string['liveconfig'] = 'Akamai Media Services Live stream';
 $string['livedomain'] = 'Live streaming domain';
