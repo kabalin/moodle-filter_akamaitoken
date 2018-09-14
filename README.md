@@ -64,4 +64,5 @@ The final URL passed to player will be:
 Credits
 -------
 
-[Ecole hôtelière de Lausanne](https://www.ehl.edu/)
+* [Ecole hôtelière de Lausanne](https://www.ehl.edu/)
+* David Owen, a founder of [Digotel Sàrl](https://www.digotel.com), provided expert advice on implemening this feature.
