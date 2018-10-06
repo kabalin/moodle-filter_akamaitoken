@@ -67,9 +67,10 @@ class filter_akamaitoken extends filter_mediaplugin {
             $servicetypes[] = 'live';
         }
 
-        foreach ($urls as $key => $url) {
+        $tokenisedurls = array();
+        foreach ($urls as $url) {
             if ($mediamanager->get_filename($url) !== 'master.m3u8') {
-                // Not an HLS stream.
+                // Not Akamai HLS stream.
                 continue;
             }
 
@@ -83,13 +84,24 @@ class filter_akamaitoken extends filter_mediaplugin {
 
                     // Add token parameter to URL.
                     $token = $this->generate_token(get_config('filter_akamaitoken', $servicetype . 'key'), $path);
+
+                    // Populate tokenised URLs array in a form of 'original URL string' => 'tokenised URL string'.
+                    $origurl = $url->out();
+                    // Add token.
                     $url->param('hdnts', $token);
-                    $urls[$key] = $url;
+                    $tokenisedurls[$origurl] = $url->out();
                 }
             }
         }
 
-        return parent::embed_alternatives($urls, $name, $width, $height, $options);
+        if (count($tokenisedurls)) {
+            // We have added tokens to some URLs. We need to modify original ones.
+            // Nothing complicated here regexp-wise, as we simply replace all "strings" we modified.
+            return str_replace(array_keys($tokenisedurls), array_values($tokenisedurls),
+                    $options[core_media_manager::OPTION_ORIGINAL_TEXT]);
+        }
+        // No changes made. Output original html.
+        return $options[core_media_manager::OPTION_ORIGINAL_TEXT];
     }
 
     /**
