@@ -32,8 +32,8 @@ filter plugin by adding a feature to identify URLs that belongs to Akamai
 Media Services and extending them with Edge Authorization tokens prior to
 passing to `core_media_manager` instance for embedding a player.
 
-Domain settings in plugin configuration is used to determine which URL is
-suitable for token Authorization.
+Domain settings in streams configuration is used to determine which URL is
+suitable for token Authorization and key is used to generate access token.
 
 ### URL Syntax
 

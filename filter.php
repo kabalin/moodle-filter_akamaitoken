@@ -43,6 +43,25 @@ require_once($CFG->dirroot.'/filter/akamaitoken/lib/akamai-token.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class filter_akamaitoken extends filter_mediaplugin {
+    /** @var array List of configured streaming services in host => key format. */
+    private $streamsconfig = [];
+
+    /**
+     * Setup page with filter requirements and other prepare stuff.
+     *
+     * @param moodle_page $page The page we are going to add requirements to.
+     * @param context $context The context which contents are going to be filtered.
+     */
+    public function setup($page, $context) {
+        if (!empty(get_config('filter_akamaitoken', 'streams'))) {
+            $streamsconfig = json_decode(get_config('filter_akamaitoken', 'streams'), true);
+            foreach ($streamsconfig as $stream) {
+                $key = key($stream);
+                $host = $stream[$key];
+                $this->streamsconfig[$host] = $key;
+            }
+        }
+    }
 
     /**
      * This is a wrapper for {@link filter_mediaplugin::embed_alternatives()}
@@ -58,14 +77,6 @@ class filter_akamaitoken extends filter_mediaplugin {
      */
     protected function embed_alternatives($urls, $name, $width, $height, $options) {
         $mediamanager = core_media_manager::instance();
-        // Determine which Akamai Media Services are configured.
-        $servicetypes = array();
-        if (get_config('filter_akamaitoken', 'ondemandkey') && get_config('filter_akamaitoken', 'ondemanddomain')) {
-            $servicetypes[] = 'ondemand';
-        }
-        if (get_config('filter_akamaitoken', 'livekey') && get_config('filter_akamaitoken', 'livedomain')) {
-            $servicetypes[] = 'live';
-        }
 
         $tokenisedurls = array();
         foreach ($urls as $url) {
@@ -74,23 +85,22 @@ class filter_akamaitoken extends filter_mediaplugin {
                 continue;
             }
 
-            foreach ($servicetypes as $servicetype) {
-                // Check if we deal with Akamai Media Services HLS stream of particular type.
-                if ($url->get_host() === get_config('filter_akamaitoken', $servicetype . 'domain')) {
-                    // Prepare path for tokenization (remove trailing /master.m3u8).
-                    $parts = explode('/', $url->get_path());
-                    array_pop($parts);
-                    $path  = implode('/', $parts);
+            // Check if we deal with Akamai Media Services HLS stream of particular type.
+            if (in_array($url->get_host(), array_keys($this->streamsconfig), true)) {
+                // Prepare path for tokenization (remove trailing /master.m3u8).
+                $parts = explode('/', $url->get_path());
+                array_pop($parts);
+                $path  = implode('/', $parts);
 
-                    // Add token parameter to URL.
-                    $token = $this->generate_token(get_config('filter_akamaitoken', $servicetype . 'key'), $path);
+                // Add token parameter to URL.
+                $key = $this->streamsconfig[$url->get_host()];
+                $token = $this->generate_token($key, $path);
 
-                    // Populate tokenised URLs array in a form of 'original URL string' => 'tokenised URL string'.
-                    $origurl = $url->out();
-                    // Add token.
-                    $url->param('hdnts', $token);
-                    $tokenisedurls[$origurl] = $url->out();
-                }
+                // Populate tokenised URLs array in a form of 'original URL string' => 'tokenised URL string'.
+                $origurl = $url->out();
+                // Add token.
+                $url->param('hdnts', $token);
+                $tokenisedurls[$origurl] = $url->out();
             }
         }
 

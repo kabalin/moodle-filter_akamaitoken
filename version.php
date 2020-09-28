@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2018100700;
+$plugin->version   = 2020092700;
 $plugin->requires  = 2018050800; // Requires Moodle 3.5
 $plugin->component = 'filter_akamaitoken';
 $plugin->dependencies = array(

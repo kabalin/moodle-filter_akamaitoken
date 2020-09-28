@@ -25,19 +25,20 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['addservice'] = 'Add streaming service';
+$string['errorkey'] = 'Please specify valid encryption key';
+$string['errordomain'] = 'Please specify valid domain name';
+$string['filtername'] = 'Akamai Media Services tokenized stream protection';
+$string['filtersettings'] = 'Filter settings';
+$string['privacy:metadata'] = 'The Akamai Media Services Authorization Token stream protection plugin does not store any personal data.';
 $string['restrictip'] = 'Restrict token to IP address';
 $string['restrictipdesc'] = 'If enabled, token will be restricted to client IP address.';
-$string['filtername'] = 'Akamai Media Services Authorization Token stream protection';
-$string['liveconfig'] = 'Akamai Media Services Live stream';
-$string['livedomain'] = 'Live streaming domain';
-$string['livedomaindesc'] = 'Akamai Media Services Live streaming domain from which HLS media is served, e.g. example-lh.akamaihd.net. Leave empty if there is no Live Service';
-$string['livekey'] = 'Live service key';
-$string['livekeydesc'] = 'Encryption key required to produce EdgeAuth token for Live stream. It must be hexadecimal digit string of even-length.';
-$string['ondemandconfig'] = 'Akamai Media Services On Demand stream';
-$string['ondemanddomain'] = 'On Demand streaming domain';
-$string['ondemanddomaindesc'] = 'Akamai Media Services on Demand streaming domain from which HLS media is served, e.g. example-vh.akamaihd.net. Leave empty if there is no On Demand Service';
-$string['ondemandkey'] = 'On Demand service key';
-$string['ondemandkeydesc'] = 'Encryption key required to produce EdgeAuth token for On Demand stream. It must be hexadecimal digit string of even-length.';
-$string['privacy:metadata'] = 'The Akamai Media Services Authorization Token stream protection plugin does not store any personal data.';
+$string['servicedomain'] = 'Streaming domain';
+$string['servicedomain_help'] = 'Akamai Media Services streaming domain from which HLS media is served, e.g. example-lh.akamaihd.net or example-vh.akamaihd.net.';
+$string['servicekey'] = 'Service key';
+$string['servicekey_help'] = 'Encryption key required to produce EdgeAuth token for the stream. It must be hexadecimal digit string of even-length.';
+$string['streams'] = 'Streams';
+$string['streamsinstruction'] = 'You can specify unlimited number of streaming services. Each service requires domain and encryption key. In order to remove service from the list, set both key and domain to empty and save changes.';
+$string['streamssettings'] = 'Streams settings';
 $string['window'] = 'Validity time window';
 $string['windowdesc'] = 'The number of seconds the token will be valid for.';
