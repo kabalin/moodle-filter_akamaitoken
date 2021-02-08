@@ -42,16 +42,20 @@ class filter_akamaitoken_testcase extends advanced_testcase {
 
     protected function setUp(): void {
         // Configure plugin.
-        set_config('ondemandkey', 'a0a0a0a0a0a0a0a0', 'filter_akamaitoken');
-        set_config('ondemanddomain', 'example-vh.akamaihd.net', 'filter_akamaitoken');
-        set_config('livekey', 'a0a0a0a0a0a0a0a0', 'filter_akamaitoken');
-        set_config('livedomain', 'example-lh.akamaihd.net', 'filter_akamaitoken');
+        $configdata = [
+            ['a0a0a0a0a0a0a0a0' => 'example-vh.akamaihd.net'],
+            ['a1a1a1a1a1a1a1a1' => 'example-lh.akamaihd.net'],
+        ];
+        set_config('streams', json_encode($configdata), 'filter_akamaitoken');
+
+        // Disable mediaplugin, so it won't interfere.
+        filter_set_global_state('mediaplugin', TEXTFILTER_DISABLED);
+        filter_set_global_state('akamaitoken', TEXTFILTER_ON);
 
         $this->resetAfterTest();
     }
 
     public function test_filter_akamaitoken_not_matching() {
-        $filterplugin = new filter_akamaitoken(null, array());
         // On demand URL.
         $urls = array(
             'http://example-invalid.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8',
@@ -63,7 +67,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         // Check each URL.
         foreach ($urls as $url) {
             $validurl = html_writer::link($url, 'Watch this one');
-            $filtered = $filterplugin->filter($validurl);
+            $filtered = format_text($validurl, FORMAT_HTML);
             // The same link, no changes expected.
             $this->assertEquals($validurl, $filtered);
         }
@@ -72,31 +76,28 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         foreach ($urls as $url) {
             $sources[] = html_writer::empty_tag('source', array('src' => $url));
         }
-        $attributes = array('controls' => 'true');
-        $sources = implode("\n", $sources);
-        $videotag = html_writer::tag('video', $sources, $attributes);
-        $filtered = $filterplugin->filter($videotag);
+        $sources = implode('', $sources);
+        $videotag = html_writer::tag('video', $sources);
+        $filtered = format_text($videotag, FORMAT_HTML);
         $this->assertEquals($videotag, $filtered);
     }
 
     public function test_filter_akamaitoken_valid_a_tag() {
-        $filterplugin = new filter_akamaitoken(null, array());
         $urls = array(
             'http://example-vh.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8',
             'http://example-lh.akamaihd.net/i/movies/event1@49207.mp4.csmil/master.m3u8',
         );
         foreach ($urls as $url) {
             $validurl = html_writer::link($url, 'Watch this one');
-            $filter = $filterplugin->filter($validurl);
+            $filtered = format_text($validurl, FORMAT_HTML);
             // Changes expected.
-            $this->assertNotEquals($validurl, $filter);
-            $this->assertContains('hdnts', $filter);
+            $this->assertNotEquals($validurl, $filtered);
+            $this->assertContains('hdnts', $filtered);
             $this->assertNotContains('ip%3D', $url);
         }
     }
 
     public function test_filter_akamaitoken_valid_video_tag() {
-        $filterplugin = new filter_akamaitoken(null, array());
         $urls = array(
             'http://example-vh.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8',
             'http://example-lh.akamaihd.net/i/movies/event1@49207.mp4.csmil/master.m3u8',
@@ -108,7 +109,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         $attributes = array('controls' => 'true');
         $sources = implode("\n", $sources);
         $videotag = html_writer::tag('video', $sources, $attributes);
-        $filtered = $filterplugin->filter($videotag);
+        $filtered = format_text($videotag, FORMAT_HTML);
         $this->assertNotEquals($videotag, $filtered);
 
         // More deatiled look at sources.
@@ -122,7 +123,6 @@ class filter_akamaitoken_testcase extends advanced_testcase {
 
     public function test_filter_akamaitoken_valid_video_tag_restrict_ip() {
         set_config('restrictip', true, 'filter_akamaitoken');
-        $filterplugin = new filter_akamaitoken(null, array());
         $urls = array(
             'http://example-vh.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8',
             'http://example-lh.akamaihd.net/i/movies/event1@49207.mp4.csmil/master.m3u8',
@@ -134,7 +134,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         $attributes = array('controls' => 'true');
         $sources = implode("\n", $sources);
         $videotag = html_writer::tag('video', $sources, $attributes);
-        $filtered = $filterplugin->filter($videotag);
+        $filtered = format_text($videotag, FORMAT_HTML);
         $this->assertNotEquals($videotag, $filtered);
 
         // More deatiled look at sources.
