@@ -4,15 +4,18 @@ moodle-filter_akamaitoken
 =========================
 
 This Moodle filter plugin enables viewing SMP protected HLS media stream
-delivered by Akamai Media Services. It is generating and adding one-time
+delivered by Akamai Adaptive Media Delivery service. It is generating and adding one-time
 access Edge Authorization token to HLS stream URL, so that it is validated
 by Edge server to authenticate user session and permit playback using the
 media player plugin of your choice.
 
-Currently plugin supports adding tokens to HLS streams provisioned by
-Akamai Media Services on Demand and Akamai Media Services Live.
+Plugin supports HLS streams provisioned using [Akamai Media Services on
+Demand](https://learn.akamai.com/en-us/products/media_delivery/media_services_on_demand.html)
+and [Akamai Media Services
+Live](https://learn.akamai.com/en-us/products/media_delivery/media_services_live.html)
+(i.e. via supported [Segmented Media Delivery Modes](https://learn.akamai.com/en-us/webhelp/adaptive-media-delivery/adaptive-media-delivery-implementation-guide/GUID-FA61EC80-6682-46D7-8E3D-9BCDBB90A5C5.html#GUID-FA61EC80-6682-46D7-8E3D-9BCDBB90A5C5))
 
-For more details on Akamai Segmented Media Protection, please refer to [documentation](https://learn.akamai.com/en-us/webhelp/adaptive-media-delivery/adaptive-media-delivery-implementation-guide/GUID-2EFAD1C1-B5B8-4F66-A4CC-10428654CDF7.html).
+For more details on Akamai Segmented Media Protection, please refer to [documentation](https://learn.akamai.com/en-us/webhelp/adaptive-media-delivery/adaptive-media-delivery-implementation-guide/GUID-C720FEF7-2FDE-469C-A7C4-6BD255729DD7.html).
 
 Installation
 ------------
@@ -34,8 +37,11 @@ filter plugin by adding a feature to identify URLs that belongs to Akamai
 Media Services and extending them with Edge Authorization tokens prior to
 passing to `core_media_manager` instance for embedding a player.
 
-Domain settings in streams configuration is used to determine which URL is
-suitable for token Authorization and key is used to generate access token.
+Domain settings in streams configuration is used to determine which URL should
+be treated for token Authorization and encryption key is used to generate
+access token for this URL. You can configure any number of encryption key - domain
+pairs. The common use case is to have one pair for media streams provisioned
+by Akamai Media Services on Demand and one for Akamai Media Services Live.
 
 ### URL Syntax
 
