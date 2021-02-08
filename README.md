@@ -1,3 +1,5 @@
+![Moodle Plugin CI](https://github.com/kabalin/moodle-filter_akamaitoken/workflows/Moodle%20Plugin%20CI/badge.svg)
+
 moodle-filter_akamaitoken
 =========================
 
