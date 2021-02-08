@@ -50,7 +50,8 @@ class streams extends \moodleform {
         $repeatarray = [];
         $repeatarray[] = $mform->createElement('html', \html_writer::start_div('border rounded p-4 mb-3 br-1 bg-gray020'));
         $repeatarray[] = $mform->createElement('text', 'key', get_string('servicekey', 'filter_akamaitoken'), ['size' => '55']);
-        $repeatarray[] = $mform->createElement('text', 'domain', get_string('servicedomain', 'filter_akamaitoken'), ['size' => '55']);
+        $repeatarray[] = $mform->createElement('text', 'domain',
+            get_string('servicedomain', 'filter_akamaitoken'), ['size' => '55']);
         $repeatarray[] = $mform->createElement('html', \html_writer::end_div());
 
         $repeatoptions = [
@@ -83,7 +84,8 @@ class streams extends \moodleform {
                     // Not FQDN host supplied (we use same check as Akamai library).
                     $errors["domain[$i]"] = get_string('errordomain', 'filter_akamaitoken');
                 }
-                if (!empty($data['key'][$i]) && !(preg_match('/^[a-fA-F0-9]+$/', $data['key'][$i]) && (strlen($data['key'][$i])%2) == 0)) {
+                if (!empty($data['key'][$i])
+                        && !(preg_match('/^[a-fA-F0-9]+$/', $data['key'][$i]) && (strlen($data['key'][$i]) % 2) == 0)) {
                     // Not valid HEX supplied .
                     $errors["key[$i]"] = get_string('errorkey', 'filter_akamaitoken');
                 }

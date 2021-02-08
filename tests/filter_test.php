@@ -18,6 +18,7 @@
  * Unit test for the filter_akamaitoken
  *
  * @package   filter_akamaitoken
+ * @category  test
  * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
  * @copyright 2018 Ecole hôtelière de Lausanne {@link https://www.ehl.edu/}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -28,10 +29,18 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/filter/akamaitoken/filter.php');
 
-
+/**
+ * Testcase class.
+ *
+ * @package   filter_akamaitoken
+ * @category  test
+ * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
+ * @copyright 2018 Ecole hôtelière de Lausanne {@link https://www.ehl.edu/}
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class filter_akamaitoken_testcase extends advanced_testcase {
 
-    protected function setUp() {
+    protected function setUp(): void {
         // Configure plugin.
         set_config('ondemandkey', 'a0a0a0a0a0a0a0a0', 'filter_akamaitoken');
         set_config('ondemanddomain', 'example-vh.akamaihd.net', 'filter_akamaitoken');
@@ -41,7 +50,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         $this->resetAfterTest();
     }
 
-    function test_filter_akamaitoken_not_matching() {
+    public function test_filter_akamaitoken_not_matching() {
         $filterplugin = new filter_akamaitoken(null, array());
         // On demand URL.
         $urls = array(
@@ -70,7 +79,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         $this->assertEquals($videotag, $filtered);
     }
 
-    function test_filter_akamaitoken_valid_a_tag() {
+    public function test_filter_akamaitoken_valid_a_tag() {
         $filterplugin = new filter_akamaitoken(null, array());
         $urls = array(
             'http://example-vh.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8',
@@ -86,7 +95,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         }
     }
 
-    function test_filter_akamaitoken_valid_video_tag() {
+    public function test_filter_akamaitoken_valid_video_tag() {
         $filterplugin = new filter_akamaitoken(null, array());
         $urls = array(
             'http://example-vh.akamaihd.net/i/movies/example2a_,300000,500000,800000,1000000,_event1.mp4.csmil/master.m3u8',
@@ -111,7 +120,7 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         }
     }
 
-    function test_filter_akamaitoken_valid_video_tag_restrict_ip() {
+    public function test_filter_akamaitoken_valid_video_tag_restrict_ip() {
         set_config('restrictip', true, 'filter_akamaitoken');
         $filterplugin = new filter_akamaitoken(null, array());
         $urls = array(

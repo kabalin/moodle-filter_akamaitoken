@@ -64,7 +64,7 @@ class filter_akamaitoken extends filter_mediaplugin {
     }
 
     /**
-     * This is a wrapper for {@link filter_mediaplugin::embed_alternatives()}
+     * This is a wrapper for {@see filter_mediaplugin::embed_alternatives}
      * that adds Edge Authorization token to HLS media URL provisioned by
      * Akamai Media Services.
      *

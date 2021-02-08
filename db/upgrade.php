@@ -26,6 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
+ * Upgrade routine.
+ *
  * @param int $oldversion the version we are upgrading from
  * @return bool result
  */
@@ -50,6 +52,6 @@ function xmldb_filter_akamaitoken_upgrade($oldversion) {
 
         upgrade_plugin_savepoint(true, 2020092700, 'filter', 'akamaitoken');
     }
-    
+
     return true;
 }

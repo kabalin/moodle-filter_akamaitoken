@@ -26,7 +26,8 @@
 defined('MOODLE_INTERNAL') || die;
 
 // New category.
-$ADMIN->add('filtersettings', new admin_category('filterakamaitoken', new lang_string('filtername', 'filter_akamaitoken'), $filter->is_enabled() === false));
+$ADMIN->add('filtersettings', new admin_category('filterakamaitoken',
+    new lang_string('filtername', 'filter_akamaitoken'), $filter->is_enabled() === false));
 
 // Move plugin settings in the new category.
 $settings->visiblename = new lang_string('filtersettings', 'filter_akamaitoken');
