@@ -24,6 +24,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace filter_akamaitoken;
+
+use html_writer;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -34,11 +38,12 @@ require_once($CFG->dirroot . '/filter/akamaitoken/filter.php');
  *
  * @package   filter_akamaitoken
  * @category  test
+ * @covers    \filter_akamaitoken
  * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
  * @copyright 2018 Ecole hôtelière de Lausanne {@link https://www.ehl.edu/}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class filter_akamaitoken_testcase extends advanced_testcase {
+class filter_test extends \advanced_testcase {
 
     protected function setUp(): void {
         // Configure plugin.
@@ -92,8 +97,8 @@ class filter_akamaitoken_testcase extends advanced_testcase {
             $filtered = format_text($validurl, FORMAT_HTML);
             // Changes expected.
             $this->assertNotEquals($validurl, $filtered);
-            $this->assertContains('hdnts', $filtered);
-            $this->assertNotContains('ip%3D', $url);
+            $this->assertStringContainsString('hdnts', $filtered);
+            $this->assertStringNotContainsString('ip%3D', $url);
         }
     }
 
@@ -115,8 +120,8 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         // More deatiled look at sources.
         if (preg_match_all('/<source\b[^>]*\bsrc="(.*?)"/im', $filtered, $matches)) {
             foreach ($matches[1] as $url) {
-                $this->assertContains('hdnts', $url);
-                $this->assertNotContains('ip%3D', $url);
+                $this->assertStringContainsString('hdnts', $url);
+                $this->assertStringNotContainsString('ip%3D', $url);
             }
         }
     }
@@ -140,8 +145,8 @@ class filter_akamaitoken_testcase extends advanced_testcase {
         // More deatiled look at sources.
         if (preg_match_all('/<source\b[^>]*\bsrc="(.*?)"/im', $filtered, $matches)) {
             foreach ($matches[1] as $url) {
-                $this->assertContains('hdnts=', $url);
-                $this->assertContains('ip%3D', $url);
+                $this->assertStringContainsString('hdnts=', $url);
+                $this->assertStringContainsString('ip%3D', $url);
             }
         }
     }

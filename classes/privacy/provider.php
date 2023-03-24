@@ -25,8 +25,6 @@
 
 namespace filter_akamaitoken\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy Subsystem for filter_akamaitoken implementing null_provider.
  *
