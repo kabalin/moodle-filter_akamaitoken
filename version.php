@@ -25,11 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023032400;
-$plugin->requires  = 2019052000; // Requires Moodle 3.7.
+$plugin->version   = 2025060700;
+$plugin->requires  = 2024100700; // Requires Moodle 4.5.
 $plugin->component = 'filter_akamaitoken';
 $plugin->dependencies = [
     'filter_mediaplugin' => ANY_VERSION,
 ];
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '0.3 for Moodle 3.7+';
+$plugin->release = '1.0 for Moodle 4.5+';

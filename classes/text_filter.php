@@ -14,6 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace filter_akamaitoken;
+
+use core_media_manager;
+
+require_once($CFG->dirroot.'/filter/akamaitoken/lib/akamai-token.php');
+
 /**
  * Akamai Media Services Authorization Token stream protection filter.
  *
@@ -28,21 +34,7 @@
  * @copyright 2018 Ecole hôtelière de Lausanne {@link https://www.ehl.edu/}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot.'/filter/mediaplugin/filter.php');
-require_once($CFG->dirroot.'/filter/akamaitoken/lib/akamai-token.php');
-
-/**
- * Akamai Media Services Authorization Token stream protection filter class.
- *
- * @package   filter_akamaitoken
- * @author    Ruslan Kabalin <ruslan.kabalin@gmail.com>
- * @copyright 2018 Ecole hôtelière de Lausanne {@link https://www.ehl.edu/}
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class filter_akamaitoken extends filter_mediaplugin {
+class text_filter extends \filter_mediaplugin\text_filter {
     /** @var array List of configured streaming services in host => key format. */
     private $streamsconfig = [];
 
@@ -123,7 +115,7 @@ class filter_akamaitoken extends filter_mediaplugin {
      */
     private function generate_token($key, $path) {
         // Configure EdgeAuth token.
-        $edgeconfig = new Akamai_EdgeAuth_Config();
+        $edgeconfig = new \Akamai_EdgeAuth_Config();
         $edgeconfig->set_window(get_config('filter_akamaitoken', 'window'));
         $edgeconfig->set_acl($path . '*');
         $edgeconfig->set_key($key);
@@ -135,7 +127,7 @@ class filter_akamaitoken extends filter_mediaplugin {
         }
 
         // Generate EdgeAuth token.
-        $generator = new Akamai_EdgeAuth_Generate();
+        $generator = new \Akamai_EdgeAuth_Generate();
         $token = $generator->generate_token($edgeconfig);
         return $token;
     }
